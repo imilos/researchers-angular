@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "customers-angular": {
+    "researchers-angular": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/customers-angular",
+            "outputPath": "dist/researchers-angular",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "customers-angular:build:production"
+              "buildTarget": "researchers-angular:build:production"
             },
             "development": {
-              "buildTarget": "customers-angular:build:development"
+              "buildTarget": "researchers-angular:build:development"
             }
           },
           "defaultConfiguration": "development"
