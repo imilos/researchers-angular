@@ -201,11 +201,11 @@
   <tbody>
     <tr *ngFor="let cust of customers; let i = index">
       <!-- <td>{{ cust.id }}</td> -->
-      <td>{{ cust.name }}</td>
+      <td><a href="{{ unikgurl }}{{ cust.ecrisid }}" target="_blank">{{ cust.name }}</a></td>
       <td>{{ cust.email }}</td>
-      <td>{{ cust.orcid }}</td>
-      <td>{{ cust.scopusid }}</td>
-      <td>{{ cust.ecrisid }}</td>
+      <td><a href="{{ orcidurl }}{{ cust.orcid }}" target="_blank">{{ cust.orcid }}</a></td>
+      <td><a href="{{ scopusurl }}{{ cust.scopusid }}" target="_blank">{{ cust.scopusid }}</a></td>
+      <td><a href="{{ ecrisurl }}{{ cust.ecrisid }}" target="_blank">{{ cust.ecrisid }}</a></td>
       <td>{{ getFacultyName(cust.faculty_id) }}</td>
       <td>{{ getDepartmentName(cust.department_id) }}</td>
       <td class="text-end">

@@ -4,6 +4,7 @@ import { CustomerService } from '../../services/customer.service';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-customers',
@@ -27,6 +28,11 @@ export class CustomersComponent implements OnInit {
   pageSize: number = 5;
   totalPages: number = 1;
   filterString: string = '';
+
+  orcidurl: string = environment.orcidurl;
+  scopusurl: string = environment.scopusurl;
+  ecrisurl: string = environment.ecrisurl;
+  unikgurl: string = environment.unikgurl;
 
   constructor(private customerService: CustomerService, private router: Router, private cdr: ChangeDetectorRef) {}
   
