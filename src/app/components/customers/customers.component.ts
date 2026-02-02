@@ -5,6 +5,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { config } from 'rxjs';
 
 @Component({
   selector: 'app-customers',
@@ -15,7 +16,7 @@ import { environment } from '../../../environments/environment';
 })
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [];
-  customer: Customer = { name: '', email: '', orcid: '', faculty_id: undefined, department_id: undefined };
+  customer: Customer = { name: '', email: '', orcid: '', faculty_id: undefined, department_id: undefined, authorities: '' };
   faculties: any[] = []; // Array to hold faculties
   departments: any[] = []; // Array to hold departments
   filteredDepartments: any[] = []; // Array to hold departments filtered by faculty
@@ -28,6 +29,7 @@ export class CustomersComponent implements OnInit {
   pageSize: number = 5;
   totalPages: number = 1;
   filterString: string = '';
+  only_multiple_authorities: boolean = false;
 
   orcidurl: string = environment.orcidurl;
   scopusurl: string = environment.scopusurl;
@@ -66,14 +68,18 @@ export class CustomersComponent implements OnInit {
   }
 
   loadCustomers(): void {
-    this.customerService.getCustomers(this.currentPage, this.pageSize, this.filterString).subscribe({
+    this.customerService.getCustomers(this.currentPage, this.pageSize, this.filterString, this.only_multiple_authorities).subscribe({
       next: response => {
         this.customers = response.data;
         this.totalPages = response.paging.total_pages;
-        console.log();
       },
       error: err => {
         this.showMessage(err, true); // Display error message
+        
+        if (err.includes('credentials') || err.includes('validate')) {
+          localStorage.removeItem('access_token');
+          this.router.navigate(['/login']);
+        }
       }
     });
   }
@@ -96,8 +102,8 @@ export class CustomersComponent implements OnInit {
     });
   }
 
-  openDeleteModal(id: number): void {
-    this.deleteCustomerId = id;
+  openDeleteModal(id: number | undefined): void {
+    this.deleteCustomerId = id ?? null;
     const customer = this.customers.find(c => c.id === id);
     this.deleteCustomerName = customer?.name;
   }
@@ -166,6 +172,32 @@ export class CustomersComponent implements OnInit {
     const department = this.departments.find(d => d.id === departmentId);
     return department ? department.name : 'Unknown';
   }
+
+  formatEcrisId(ecrisId: string|undefined): string {
+    if (!ecrisId) {
+      return '';
+    }
+    if (ecrisId.length <= 4) {
+      return '0' + ecrisId;
+    }
+    return ecrisId;
+  }
+
+  formatAuthorities(authorities: string|undefined): string {
+    if (!authorities) {
+      return '';
+    }
+
+    let formattedAuthorities = '';
+    
+    for (const authority of authorities.split(' ')) {
+      if (authority) {
+        formattedAuthorities += `<a href="${environment.scidarurl}${authority}" target="_blank">${authority}</a> <br/> `;
+      }
+    }
+    return formattedAuthorities.slice(0, -2); // Remove trailing comma and space
+  }
+
 
   onFacultyChange(facultyId: any): void {
     // Clear the selected department when faculty changes

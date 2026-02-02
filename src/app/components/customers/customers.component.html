@@ -161,23 +161,35 @@
   </div>
 </div>
 
-<!-- Filter Section -->
 <div class="container-fluid mt-4 mb-4 ps-0">
   <div class="row g-0">
-    <div class="col-md-3">
-      <div class="form-group d-flex gap-2">
+    <div class="col-md-5"> <div class="form-group d-flex gap-3 align-items-center">
         <input
           type="text"
           id="filterString"
           [(ngModel)]="filterString"
           (input)="this.changePage(1); loadCustomers();"
           class="form-control"
-          placeholder="Search any part of name, email, ORCID, Scopus ID, or ECRIS ID"
+          placeholder="Search name, email, IDs..."
         />
-        <button class="btn btn-secondary" (click)="filterString = ''; loadCustomers()">Clear</button>
+        
+        <div class="form-check mb-0 text-nowrap">
+          <input 
+            class="form-check-input" 
+            type="checkbox" 
+            id="onlyMultipleAuthorities"
+            [(ngModel)]="only_multiple_authorities"
+            (change)="this.changePage(1); loadCustomers();"
+          >
+          <label class="form-check-label" for="onlyMultipleAuthorities">
+            Multiple Authorities
+          </label>
+        </div>
+
+        <button class="btn btn-secondary" (click)="filterString = ''; only_multiple_authorities = false; loadCustomers()">Clear</button>
       </div>
     </div>
-    <div class="col-md-9 d-flex justify-content-end">
+    <div class="col-md-7 d-flex justify-content-end">
       <button class="btn btn-primary" (click)="downloadCsv()">Download CSV</button>
     </div>
   </div>
@@ -195,6 +207,7 @@
       <th scope="col">ECRIS ID</th>
       <th scope="col">Faculty</th>
       <th scope="col">Department</th>
+      <th scope="col">SCIDAR Authorities</th>
       <th scope="col" class="text-end">Actions</th>
     </tr>
   </thead>
@@ -205,9 +218,10 @@
       <td>{{ cust.email }}</td>
       <td><a href="{{ orcidurl }}{{ cust.orcid }}" target="_blank">{{ cust.orcid }}</a></td>
       <td><a href="{{ scopusurl }}{{ cust.scopusid }}" target="_blank">{{ cust.scopusid }}</a></td>
-      <td><a href="{{ ecrisurl }}{{ cust.ecrisid }}" target="_blank">{{ cust.ecrisid }}</a></td>
+      <td><a href="{{ ecrisurl }}{{ formatEcrisId(cust.ecrisid) }}" target="_blank">{{ cust.ecrisid }}</a></td>
       <td>{{ getFacultyName(cust.faculty_id) }}</td>
       <td>{{ getDepartmentName(cust.department_id) }}</td>
+      <td [innerHTML]="formatAuthorities(cust.authorities)"></td>
       <td class="text-end">
         <button
           class="btn btn-sm btn-warning me-2"

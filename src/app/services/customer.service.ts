@@ -38,10 +38,13 @@ export class CustomerService {
   }
 
 
-  getCustomers(page: number = 1, pageSize: number = 5, filterString?: string): Observable<any> {
+  getCustomers(page: number = 1, pageSize: number = 5, filterString?: string, onlyMultipleAuthorities?: boolean): Observable<any> {
     let url = `${this.apiUrl}?page=${page}&per_page=${pageSize}`;
     if (filterString) {
       url += `&filter_string=${encodeURIComponent(filterString)}`;
+    }
+    if (onlyMultipleAuthorities !== undefined && onlyMultipleAuthorities !== null) {
+      url += `&only_multiple_authorities=${onlyMultipleAuthorities}`;
     }
     return this.http.get<any>(url, { headers: this.getAuthHeaders() }).pipe(
       tap(response => this.showMessage(response.message)),
