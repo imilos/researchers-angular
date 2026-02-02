@@ -1,6 +1,6 @@
-# CustomersAngular
+# Researchers Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
+The project is intended as a front-end for [Researchers Management API](https://github.com/imilos/researchers-api) for the University of Kragujevac needs. This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6. 
 
 ## Development server
 
