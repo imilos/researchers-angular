@@ -16,6 +16,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
+  apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private router: Router) {}
 

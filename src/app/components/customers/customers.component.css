@@ -1,0 +1,15 @@
+/* U svoj CSS fajl dodajte */
+th {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+th:hover {
+  background-color: #97c9fc;
+}
+
+.sort-icon {
+  margin-left: 5px;
+  font-weight: bold;
+}

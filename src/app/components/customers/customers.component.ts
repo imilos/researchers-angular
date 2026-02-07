@@ -26,10 +26,13 @@ export class CustomersComponent implements OnInit {
   deleteCustomerId: number | null = null;
   deleteCustomerName: string | undefined = '';
   currentPage: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   totalPages: number = 1;
   filterString: string = '';
   only_multiple_authorities: boolean = false;
+
+  sortColumn: string = '';
+  sortDirection: boolean = true; // true for ascending, false for descending
 
   orcidurl: string = environment.orcidurl;
   scopusurl: string = environment.scopusurl;
@@ -68,7 +71,8 @@ export class CustomersComponent implements OnInit {
   }
 
   loadCustomers(): void {
-    this.customerService.getCustomers(this.currentPage, this.pageSize, this.filterString, this.only_multiple_authorities).subscribe({
+    this.customerService.getCustomers(this.currentPage, this.pageSize, this.filterString, this.only_multiple_authorities, 
+      this.sortColumn, this.sortDirection).subscribe({
       next: response => {
         this.customers = response.data;
         this.totalPages = response.paging.total_pages;
@@ -76,7 +80,7 @@ export class CustomersComponent implements OnInit {
       error: err => {
         this.showMessage(err, true); // Display error message
         
-        if (err.includes('credentials') || err.includes('validate')) {
+        if (err.includes('Http failure')) {
           localStorage.removeItem('access_token');
           this.router.navigate(['/login']);
         }
@@ -219,5 +223,19 @@ export class CustomersComponent implements OnInit {
     this.message = '';  // Clear the message after 5 seconds
   }, 5000);
   }
+
+  protected sortTable(column: string): void {
+    if (this.sortColumn === column) {
+      // If the same column is clicked, toggle the sort direction
+      this.sortDirection = !this.sortDirection;
+    } else {
+      // If a new column is clicked, set it as the sort column and default to ascending
+      this.sortColumn = column;
+      this.sortDirection = true;
+    }
+    this.changePage(1); // Reset to first page when sorting changes
+    this.loadCustomers(); // Reload customers with new sorting
+  }
+
   
 }

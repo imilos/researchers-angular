@@ -38,13 +38,21 @@ export class CustomerService {
   }
 
 
-  getCustomers(page: number = 1, pageSize: number = 5, filterString?: string, onlyMultipleAuthorities?: boolean): Observable<any> {
-    let url = `${this.apiUrl}?page=${page}&per_page=${pageSize}`;
+  getCustomers(page: number = 1, pageSize: number = 5, filterString?: string, onlyMultipleAuthorities?: boolean, 
+    sortColumn?: string, sortOrder?: boolean): Observable<any> {
+
+      let url = `${this.apiUrl}?page=${page}&per_page=${pageSize}`;
     if (filterString) {
       url += `&filter_string=${encodeURIComponent(filterString)}`;
     }
     if (onlyMultipleAuthorities !== undefined && onlyMultipleAuthorities !== null) {
       url += `&only_multiple_authorities=${onlyMultipleAuthorities}`;
+    }
+    if (sortColumn) {
+      url += `&sort_column=${encodeURIComponent(sortColumn)}`;
+    }
+    if (sortOrder !== undefined && sortOrder !== null) {
+      url += `&sort_order=${sortOrder}`;
     }
     return this.http.get<any>(url, { headers: this.getAuthHeaders() }).pipe(
       tap(response => this.showMessage(response.message)),
@@ -105,7 +113,7 @@ export class CustomerService {
   }
 
   private handleError(error: any): Observable<never> {
-    const errorMessage = error.error?.message || 'An unexpected error occurred';
+    const errorMessage = error?.message || 'An unexpected error occurred';
     console.error('API Error:', errorMessage);
     return throwError(() => errorMessage); // Pass the error message to the component
   }

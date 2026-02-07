@@ -1,10 +1,10 @@
 <!-- Navigation Bar with Logout Button -->
 <nav class="navbar navbar-light bg-light justify-content-between">
-  <span class="navbar-brand mb-0 h1">Researcher Management</span>
+  <span class="navbar-brand mb-0 h1">UNIC Researchers Management</span>
   <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
 </nav>
 
-<h2 class="text-center mb-4">Researcher Management</h2>
+<h2 class="text-center mb-4">University of Kragujevac</h2>
 
 <!-- Show the message -->
 <div *ngIf="message" [ngClass]="{'alert': true, 'alert-success': !isError, 'alert-danger': isError, 'fade': true, 'show': true}" class="alert-dismissible fade show">
@@ -13,153 +13,158 @@
 
 <!-- Form -->
 <div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
+  <div class="card border-light shadow-sm">
+    <div class="card-header bg-light py-2">
+      <h6 class="mb-0">{{ isEditing ? 'Edit Researcher' : 'Add New Researcher' }}</h6>
+    </div>
+    <div class="card-body p-3">
       <form (ngSubmit)="saveCustomer()" #customerForm="ngForm" novalidate>
-        <!-- Name Field -->
-        <div class="row mb-3 align-items-start">
-          <label for="name" class="col-sm-3 col-form-label text-end">Name</label>
-          <div class="col-sm-9">
+        <!-- First Row - Essential Fields -->
+        <div class="row g-2 align-items-end">
+          <!-- Name -->
+          <div class="col-md-2">
+            <label class="form-label fw-bold mb-1">Name *</label>
             <input
               type="text"
-              id="name"
               [(ngModel)]="customer.name"
               name="name"
               class="form-control"
-              placeholder="Enter name"
+              placeholder="Name"
               required
               #name="ngModel"
             />
-            <!-- Validation message for name -->
-            <div *ngIf="name.invalid && name.touched" class="text-danger small mt-1">
-              Name is required.
-            </div>
           </div>
-        </div>
-
-        <!-- Email Field -->
-        <div class="row mb-3 align-items-start">
-          <label for="email" class="col-sm-3 col-form-label text-end">Email</label>
-          <div class="col-sm-9">
+          
+          <!-- Email -->
+          <div class="col-md-2">
+            <label class="form-label fw-bold mb-1">Email *</label>
             <input
               type="email"
-              id="email"
               [(ngModel)]="customer.email"
               name="email"
               class="form-control"
-              placeholder="Enter email"
+              placeholder="email@domain.com"
               required
               email
               #email="ngModel"
             />
-            <!-- Validation messages for email -->
-            <div *ngIf="email.invalid && email.touched" class="text-danger small mt-1">
-              <div *ngIf="email.errors?.['required']">Email is required.</div>
-              <div *ngIf="email.errors?.['email']">
-                Enter a valid email address.
-              </div>
-            </div>
           </div>
-        </div>
-
-        <!-- ORCID Field -->
-        <div class="row mb-3 align-items-start">
-          <label for="orcid" class="col-sm-3 col-form-label text-end">ORCID</label>
-          <div class="col-sm-9">
+          
+          <!-- ORCID -->
+          <div class="col-md-2">
+            <label class="form-label fw-bold mb-1">ORCID</label>
             <input
               type="text"
-              id="orcid"
               [(ngModel)]="customer.orcid"
               name="orcid"
               class="form-control"
-              placeholder="Enter ORCID"
+              placeholder="0000-0000-0000-0000"
               pattern="[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}"
               #orcid="ngModel"
             />
-            <!-- Validation messages for ORCID -->
-            <div *ngIf="orcid.invalid && orcid.touched" class="text-danger small mt-1">            
-              <div *ngIf="orcid.errors?.['pattern']">
-                Enter a valid ORCID (format: 0000-0000-0000-0000).
-              </div>
-            </div>
           </div>
-        </div>
-
-        <!-- Scopus ID Field -->
-        <div class="row mb-3 align-items-start">
-          <label for="scopusid" class="col-sm-3 col-form-label text-end">Scopus ID</label>
-          <div class="col-sm-9">
+          
+          <!-- Scopus ID -->
+          <div class="col-md-2">
+            <label class="form-label fw-bold mb-1">Scopus ID</label>
             <input
               type="text"
-              id="scopusid"
               [(ngModel)]="customer.scopusid"
               name="scopusid"
               class="form-control"
-              placeholder="Enter Scopus ID"
-              #scopusid="ngModel"
+              placeholder="Scopus ID"
             />
           </div>
-        </div>
 
-        <!-- ECRIS ID Field -->
-        <div class="row mb-3 align-items-start">
-          <label for="ecrisid" class="col-sm-3 col-form-label text-end">ECRIS ID</label>
-          <div class="col-sm-9">
+          <!-- ECRIS ID -->
+          <div class="col-md-3">
+            <label class="form-label fw-bold mb-1">ECRIS ID</label>
             <input
               type="text"
-              id="ecrisid"
               [(ngModel)]="customer.ecrisid"
               name="ecrisid"
               class="form-control"
-              placeholder="Enter ECRIS ID"
-              #ecrisid="ngModel"
+              placeholder="ECRIS ID"
             />
           </div>
         </div>
-
-
-        <!-- Faculty Field -->
-        <div class="row mb-3 align-items-center">
-          <label for="faculty" class="col-sm-3 col-form-label text-end">Faculty</label>
-          <div class="col-sm-9">
-            <select id="faculty" class="form-control" [(ngModel)]="customer.faculty_id" (change)="onFacultyChange(customer.faculty_id)" name="faculty">
-              <option *ngFor="let faculty of faculties" [value]="faculty.id">{{ getFacultyName(faculty.id) }}</option>
+        
+        <!-- Second Row -->
+        <div class="row g-2 align-items-end mt-2 pt-2 border-top">
+          <!-- Faculty -->
+          <div class="col-md-2">
+            <label class="form-label fw-bold mb-1">Faculty</label>
+            <select class="form-control" 
+                    [(ngModel)]="customer.faculty_id" 
+                    (change)="onFacultyChange(customer.faculty_id)" 
+                    name="faculty">
+              <option *ngFor="let faculty of faculties" [value]="faculty.id">
+                {{ getFacultyName(faculty.id) }}
+              </option>
             </select>
           </div>
-        </div>
-
-        <!-- Department Field -->
-        <div class="row mb-3 align-items-center">
-          <label for="department" class="col-sm-3 col-form-label text-end">Department</label>
-          <div class="col-sm-9">
-            <select id="department" class="form-control" [(ngModel)]="customer.department_id" name="department">
-              <option [ngValue]="null" selected>N/A</option>
-              <option *ngFor="let department of filteredDepartments" [value]="department.id">{{ department.name }}</option>
+          
+          <!-- Department -->
+          <div class="col-md-3">
+            <label class="form-label fw-bold mb-1">Department</label>
+            <select class="form-control" 
+                    [(ngModel)]="customer.department_id" 
+                    name="department">
+              <option [ngValue]="null" selected>Select Department</option>
+              <option *ngFor="let department of filteredDepartments" [value]="department.id">
+                {{ department.name }}
+              </option>
             </select>
           </div>
+          
+          <!-- Buttons Group -->
+          <div class="col-md-3">
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary flex-grow-1"
+                [disabled]="customerForm.invalid"
+              >
+                {{ isEditing ? 'Update' : 'Add' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary flex-grow-1"
+                (click)="resetForm()"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+          
+          <!-- Validation Messages (shown inline) -->
+          <div class="col-md-4">
+            <div *ngIf="name.invalid && name.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle"></i> Name is required
+            </div>
+            <div *ngIf="email.invalid && email.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle"></i> 
+              <span *ngIf="email.errors?.['required']">Email is required</span>
+              <span *ngIf="email.errors?.['email']">Valid email required</span>
+            </div>
+            <div *ngIf="orcid.invalid && orcid.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle"></i> Invalid ORCID format
+            </div>
+          </div>
         </div>
-
-        <!-- Submit Button -->
-        <button
-          type="submit"
-          class="btn btn-primary w-50"
-          [disabled]="customerForm.invalid"
-        >
-          {{ isEditing ? 'Update' : 'Add' }}
-        </button>
-        <!-- Reset Button -->
-        <button
-          type="button"
-          class="btn btn-secondary w-50" 
-          (click)="resetForm()"
-        >
-        Reset
-        </button>
-
+        
+        <!-- Quick validation hints -->
+        <div *ngIf=" (name.invalid || email.invalid) && (name.touched || email.touched)" 
+             class="mt-1">
+          <small class="text-danger">
+            <i class="fas fa-exclamation-triangle"></i> Please fill required fields
+          </small>
+        </div>
       </form>
     </div>
   </div>
 </div>
+
 
 <div class="container-fluid mt-4 mb-4 ps-0">
   <div class="row g-0">
@@ -186,7 +191,9 @@
           </label>
         </div>
 
-        <button class="btn btn-secondary" (click)="filterString = ''; only_multiple_authorities = false; loadCustomers()">Clear</button>
+        <button class="btn btn-secondary" (click)="filterString = ''; only_multiple_authorities = false; sortColumn=''; sortDirection=true; loadCustomers()">
+          Clear
+        </button>
       </div>
     </div>
     <div class="col-md-7 d-flex justify-content-end">
@@ -199,18 +206,52 @@
 <table class="table table-striped mt-4">
   <thead>
     <tr>
-      <!-- <th scope="col">#</th> -->
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">ORCID</th>
-      <th scope="col">Scopus ID</th>
-      <th scope="col">ECRIS ID</th>
-      <th scope="col">Faculty</th>
-      <th scope="col">Department</th>
-      <th scope="col">SCIDAR Authorities</th>
+      <th scope="col" (click)="sortTable('name')">
+        Name
+        <span class="sort-icon" *ngIf="sortColumn === 'name'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col" (click)="sortTable('email')">
+        Email
+        <span class="sort-icon" *ngIf="sortColumn === 'email'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col" (click)="sortTable('orcid')">
+        ORCID
+        <span class="sort-icon" *ngIf="sortColumn === 'orcid'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col" (click)="sortTable('scopusid')">
+        Scopus ID
+        <span class="sort-icon" *ngIf="sortColumn === 'scopusid'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col" (click)="sortTable('ecrisid')">
+        ECRIS ID
+        <span class="sort-icon" *ngIf="sortColumn === 'ecrisid'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col" (click)="sortTable('faculty')">
+        Faculty
+        <span class="sort-icon" *ngIf="sortColumn === 'faculty'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col" (click)="sortTable('department')">
+        Department
+        <span class="sort-icon" *ngIf="sortColumn === 'department'">
+          {{ sortDirection ? '↑' : '↓' }}
+        </span>
+      </th>
+      <th scope="col">SCIDAR Authorities </th>
       <th scope="col" class="text-end">Actions</th>
     </tr>
-  </thead>
+  </thead>  
   <tbody>
     <tr *ngFor="let cust of customers; let i = index">
       <!-- <td>{{ cust.id }}</td> -->
