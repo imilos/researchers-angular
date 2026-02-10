@@ -16,10 +16,10 @@ import { config } from 'rxjs';
 })
 export class CustomersComponent implements OnInit {
   customers: Customer[] = [];
-  customer: Customer = { name: '', email: '', orcid: '', faculty_id: undefined, department_id: undefined, authorities: '' };
+  customer: Customer = { name: '', email: '', orcid: '', faculty_id: null, department_id: null, authorities: '' };
   faculties: any[] = []; // Array to hold faculties
   departments: any[] = []; // Array to hold departments
-  filteredDepartments: any[] = []; // Array to hold departments filtered by faculty
+  facultyDepartments: any[] = []; // Array to hold departments filtered by faculty
   isEditing: boolean = false;
   message: string = ''; // Success or error message
   isError: boolean = false; // Flag to differentiate between success and error messages
@@ -28,7 +28,11 @@ export class CustomersComponent implements OnInit {
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 1;
+
   filterString: string = '';
+  filterFacultyID: number | null = null;
+  filterDepartmentID: number | null = null;
+  facultyDepartmentsForFilter: any[] = []; // Array to hold departments filtered by faculty
   only_multiple_authorities: boolean = false;
 
   sortColumn: string = '';
@@ -72,7 +76,7 @@ export class CustomersComponent implements OnInit {
 
   loadCustomers(): void {
     this.customerService.getCustomers(this.currentPage, this.pageSize, this.filterString, this.only_multiple_authorities, 
-      this.sortColumn, this.sortDirection).subscribe({
+      this.filterFacultyID, this.filterDepartmentID,this.sortColumn, this.sortDirection).subscribe({
       next: response => {
         this.customers = response.data;
         this.totalPages = response.paging.total_pages;
@@ -123,13 +127,14 @@ export class CustomersComponent implements OnInit {
   }  
 
   editCustomer(cust: Customer): void {
-    this.filteredDepartments = this.departments.filter(d => d.faculty_id == cust.faculty_id);
-    this.customer = { ...cust };    
+    this.facultyDepartments = this.departments.filter(d => d.faculty_id == cust.faculty_id);
+    this.customer = { ...cust };
     this.isEditing = true;
   }
 
   resetForm(): void {
-    this.customer = { name: '', email: '', orcid: '', scopusid: '', ecrisid: '', faculty_id: undefined, department_id: undefined };
+    this.customer = { name: '', email: '', orcid: '', scopusid: '', ecrisid: '', faculty_id: null, department_id: null };
+    this.onFacultyChange(null); // Reset department options
     this.isEditing = false;
   }
 
@@ -203,16 +208,28 @@ export class CustomersComponent implements OnInit {
   }
 
 
-  onFacultyChange(facultyId: any): void {
+  onFacultyChange(facultyId: number|null|undefined): void {
     // Clear the selected department when faculty changes
-    this.customer.department_id = undefined;
+    this.customer.department_id = null;
     // Filter departments based on selected faculty
-    this.filteredDepartments = this.departments.filter(d => d.faculty_id == facultyId);
+    this.facultyDepartments = this.departments.filter(d => d.faculty_id == facultyId);
   }
 
-//  getFacultyDepartmentIDs(facultyId: number): any[] {
-//    return this.filteredDepartments;
-//  }
+  onFacultyFilterChange(facultyId: number|null): void {
+    this.filterDepartmentID = null;
+    this.facultyDepartmentsForFilter = this.departments.filter(d => d.faculty_id == facultyId);
+  }
+
+  onClearFilters(): void {
+    this.filterString = ''; 
+    this.only_multiple_authorities = false; 
+    this.filterFacultyID = null; 
+    this.filterDepartmentID = null; 
+    this.sortColumn=''; 
+    this.sortDirection=true; 
+    this.onFacultyFilterChange(null); 
+    this.loadCustomers();
+  }
 
   private showMessage(msg: string, isError: boolean): void {
     this.message = msg;

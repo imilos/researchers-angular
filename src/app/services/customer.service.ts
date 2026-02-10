@@ -39,11 +39,17 @@ export class CustomerService {
 
 
   getCustomers(page: number = 1, pageSize: number = 5, filterString?: string, onlyMultipleAuthorities?: boolean, 
-    sortColumn?: string, sortOrder?: boolean): Observable<any> {
+    filterFacultyID?: number|null, filterDepartmentID?: number|null, sortColumn?: string, sortOrder?: boolean): Observable<any> {
 
       let url = `${this.apiUrl}?page=${page}&per_page=${pageSize}`;
     if (filterString) {
       url += `&filter_string=${encodeURIComponent(filterString)}`;
+    }
+    if (filterFacultyID !== undefined && filterFacultyID !== null) {
+      url += `&faculty_id=${filterFacultyID}`;
+    }
+    if (filterDepartmentID !== undefined && filterDepartmentID !== null) {
+      url += `&department_id=${filterDepartmentID}`;
     }
     if (onlyMultipleAuthorities !== undefined && onlyMultipleAuthorities !== null) {
       url += `&only_multiple_authorities=${onlyMultipleAuthorities}`;

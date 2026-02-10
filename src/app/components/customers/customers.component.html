@@ -98,6 +98,7 @@
                     [(ngModel)]="customer.faculty_id" 
                     (change)="onFacultyChange(customer.faculty_id)" 
                     name="faculty">
+              <option [ngValue]="null" selected>Select Faculty</option>
               <option *ngFor="let faculty of faculties" [value]="faculty.id">
                 {{ getFacultyName(faculty.id) }}
               </option>
@@ -111,7 +112,7 @@
                     [(ngModel)]="customer.department_id" 
                     name="department">
               <option [ngValue]="null" selected>Select Department</option>
-              <option *ngFor="let department of filteredDepartments" [value]="department.id">
+              <option *ngFor="let department of facultyDepartments" [value]="department.id">
                 {{ department.name }}
               </option>
             </select>
@@ -175,9 +176,36 @@
           [(ngModel)]="filterString"
           (input)="this.changePage(1); loadCustomers();"
           class="form-control"
-          placeholder="Search name, email, IDs..."
+          placeholder="Search name, email, researcher IDs..."
         />
-        
+
+        <!-- Faculty -->
+        <div class="col-md-3">
+          <select class="form-control" 
+                  [(ngModel)]="filterFacultyID"
+                  (change)="this.onFacultyFilterChange(filterFacultyID); this.changePage(1); loadCustomers();" 
+                  name="filterFaculty">
+                <option [ngValue]="null" selected>Select Faculty...</option>
+                <option *ngFor="let faculty of faculties" [value]="faculty.id">
+                {{ getFacultyName(faculty.id) }}
+              </option>
+          </select>
+        </div>
+
+        <!-- Department -->
+        <div class="col-md-3">
+          <select class="form-control" 
+                  [(ngModel)]="filterDepartmentID" 
+                  (change)="this.changePage(1); loadCustomers();"
+                  name="filterDepartment">
+            <option [ngValue]="null" selected>Select Department...</option>
+            <option *ngFor="let department of facultyDepartmentsForFilter" [value]="department.id">
+              {{ department.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Multiple Authorities Checkbox -->
         <div class="form-check mb-0 text-nowrap">
           <input 
             class="form-check-input" 
@@ -191,7 +219,7 @@
           </label>
         </div>
 
-        <button class="btn btn-secondary" (click)="filterString = ''; only_multiple_authorities = false; sortColumn=''; sortDirection=true; loadCustomers()">
+        <button class="btn btn-secondary" (click)="onClearFilters()">
           Clear
         </button>
       </div>

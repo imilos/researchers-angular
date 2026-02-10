@@ -5,7 +5,7 @@ export class Customer {
     orcid?: string;
     scopusid?: string;
     ecrisid?: string;
-    faculty_id?: number;
-    department_id?: number;
+    faculty_id?: number | null;
+    department_id?: number | null;
     authorities?: string;
   }

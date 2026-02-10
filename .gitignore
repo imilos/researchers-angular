@@ -7,8 +7,6 @@
 /.angular/
 .angular/
 
-src/environments/environment.ts
-
 # Node modules and dependency files
 /node_modules/
 /package-lock.json
