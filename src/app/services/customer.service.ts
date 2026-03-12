@@ -106,7 +106,7 @@ export class CustomerService {
   }
 
   downloadCsv(): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/download`, { 
+    return this.http.get(`${this.apiUrl}/download/csv`, { 
       headers: this.getAuthHeaders(),
       responseType: 'blob'
     }).pipe(
